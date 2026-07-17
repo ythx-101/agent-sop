@@ -19,23 +19,69 @@ Low-risk work runs a deliberately lighter path. Tiers and boundaries are defined
 
 ```mermaid
 flowchart TD
-  A([Task start]) --> B["discover-roster.py --probe"]
-  B --> C["Slots by condition, not name"]
-  C --> D["sole-writer: strongest + write"]
-  C --> E["reviewer: strongest, other vendor"]
-  C --> F["scouts: cheapest fast tier"]
-  D & E & F --> G[Roster proposal]
-  G --> H[["HUMAN: approve / veto roster"]]
-  H -->|veto| C
-  H -->|approve| I[Plan]
-  I --> J[["HUMAN: approve plan"]]
-  J --> K[Sole-writer implements]
-  K --> L[Cross-vendor independent review]
-  L --> M[Verification]
-  M --> N[Signoff packet]
-  N --> O[["HUMAN: signoff"]]
-  O --> P[Deploy]
-  P --> Q([Agents never self-serve publish or deploy])
+  subgraph DISC["🔍 Discovery"]
+    direction TB
+    A([Task start]) --> B[discover-roster.py --probe]
+    B --> C[Slots by condition, not name]
+  end
+
+  subgraph TEAM["💜 Team"]
+    direction TB
+    C --> D[sole-writer: strongest + write]
+    C --> E[reviewer: strongest, other vendor]
+    C --> F[scouts: cheapest fast tier]
+    D & E & F --> G[Roster proposal]
+  end
+
+  subgraph PIPE["⚙️ Pipeline"]
+    direction TB
+    G --> H[[HUMAN: approve / veto roster]]
+    H -->|veto| C
+    H -->|approve| I[Plan]
+    I --> J[[HUMAN: approve plan]]
+    J --> K[Sole-writer implements]
+    K --> L[Cross-vendor independent review]
+    L --> M[Verification]
+    M --> N[Signoff packet]
+    N --> O[[HUMAN: signoff]]
+  end
+
+  subgraph SHIP["🚀 Ship"]
+    direction TB
+    O --> P[Deploy]
+    P --> Q([Agents never self-serve publish or deploy])
+  end
+
+  classDef startEnd fill:#0EA5E9,stroke:#0369A1,stroke-width:2px,color:#fff,rx:12,ry:12
+  classDef discover fill:#38BDF8,stroke:#0284C7,stroke-width:2px,color:#0C4A6E
+  classDef agent fill:#34D399,stroke:#059669,stroke-width:2px,color:#064E3B
+  classDef proposal fill:#86EFAC,stroke:#16A34A,stroke-width:2px,color:#14532D
+  classDef plan fill:#6EE7B7,stroke:#0D9488,stroke-width:2px,color:#134E4A
+  classDef work fill:#4ADE80,stroke:#15803D,stroke-width:2px,color:#14532D
+  classDef review fill:#2DD4BF,stroke:#0F766E,stroke-width:2px,color:#fff
+  classDef verify fill:#14B8A6,stroke:#0F766E,stroke-width:2px,color:#fff
+  classDef packet fill:#5EEAD4,stroke:#0D9488,stroke-width:2px,color:#134E4A
+  classDef human fill:#FBBF24,stroke:#C2410C,stroke-width:4px,color:#7C2D12
+  classDef deploy fill:#F472B6,stroke:#BE185D,stroke-width:3px,color:#fff
+  classDef finale fill:#EC4899,stroke:#9D174D,stroke-width:3px,color:#fff
+
+  class A startEnd
+  class B,C discover
+  class D,E,F agent
+  class G proposal
+  class H,J,O human
+  class I plan
+  class K work
+  class L review
+  class M verify
+  class N packet
+  class P deploy
+  class Q finale
+
+  style DISC fill:#E0F2FE,stroke:#7DD3FC,stroke-width:2px,color:#0C4A6E
+  style TEAM fill:#EDE9FE,stroke:#C4B5FD,stroke-width:2px,color:#5B21B6
+  style PIPE fill:#ECFDF5,stroke:#6EE7B7,stroke-width:2px,color:#065F46
+  style SHIP fill:#FDF2F8,stroke:#F9A8D4,stroke-width:2px,color:#9D174D
 ```
 
 ## Design principles

@@ -18,23 +18,69 @@
 
 ```mermaid
 flowchart TD
-  A([任务开始]) --> B["discover-roster.py --probe"]
-  B --> C["按条件分槽，不按名字"]
-  C --> D["sole-writer：最强且有写权"]
-  C --> E["reviewer：跨厂商最强"]
-  C --> F["scouts：最便宜的 fast 档"]
-  D & E & F --> G[Roster proposal]
-  G --> H[["人：批准 / 否决阵容"]]
-  H -->|否决| C
-  H -->|批准| I[计划]
-  I --> J[["人：批准计划"]]
-  J --> K[单一写入者实施]
-  K --> L[跨厂商独立审查]
-  L --> M[验证]
-  M --> N[签核包]
-  N --> O[["人：签核"]]
-  O --> P[部署]
-  P --> Q([Agent 永不自助发布/部署])
+  subgraph DISC["🔍 发现"]
+    direction TB
+    A([任务开始]) --> B[discover-roster.py --probe]
+    B --> C[按条件分槽，不按名字]
+  end
+
+  subgraph TEAM["💜 组队"]
+    direction TB
+    C --> D[sole-writer：最强且有写权]
+    C --> E[reviewer：跨厂商最强]
+    C --> F[scouts：最便宜的 fast 档]
+    D & E & F --> G[Roster proposal]
+  end
+
+  subgraph PIPE["⚙️ 流水线"]
+    direction TB
+    G --> H[[人：批准 / 否决阵容]]
+    H -->|否决| C
+    H -->|批准| I[计划]
+    I --> J[[人：批准计划]]
+    J --> K[单一写入者实施]
+    K --> L[跨厂商独立审查]
+    L --> M[验证]
+    M --> N[签核包]
+    N --> O[[人：签核]]
+  end
+
+  subgraph SHIP["🚀 发布"]
+    direction TB
+    O --> P[部署]
+    P --> Q([Agent 永不自助发布/部署])
+  end
+
+  classDef startEnd fill:#0EA5E9,stroke:#0369A1,stroke-width:2px,color:#fff,rx:12,ry:12
+  classDef discover fill:#38BDF8,stroke:#0284C7,stroke-width:2px,color:#0C4A6E
+  classDef agent fill:#34D399,stroke:#059669,stroke-width:2px,color:#064E3B
+  classDef proposal fill:#86EFAC,stroke:#16A34A,stroke-width:2px,color:#14532D
+  classDef plan fill:#6EE7B7,stroke:#0D9488,stroke-width:2px,color:#134E4A
+  classDef work fill:#4ADE80,stroke:#15803D,stroke-width:2px,color:#14532D
+  classDef review fill:#2DD4BF,stroke:#0F766E,stroke-width:2px,color:#fff
+  classDef verify fill:#14B8A6,stroke:#0F766E,stroke-width:2px,color:#fff
+  classDef packet fill:#5EEAD4,stroke:#0D9488,stroke-width:2px,color:#134E4A
+  classDef human fill:#FBBF24,stroke:#C2410C,stroke-width:4px,color:#7C2D12
+  classDef deploy fill:#F472B6,stroke:#BE185D,stroke-width:3px,color:#fff
+  classDef finale fill:#EC4899,stroke:#9D174D,stroke-width:3px,color:#fff
+
+  class A startEnd
+  class B,C discover
+  class D,E,F agent
+  class G proposal
+  class H,J,O human
+  class I plan
+  class K work
+  class L review
+  class M verify
+  class N packet
+  class P deploy
+  class Q finale
+
+  style DISC fill:#E0F2FE,stroke:#7DD3FC,stroke-width:2px,color:#0C4A6E
+  style TEAM fill:#EDE9FE,stroke:#C4B5FD,stroke-width:2px,color:#5B21B6
+  style PIPE fill:#ECFDF5,stroke:#6EE7B7,stroke-width:2px,color:#065F46
+  style SHIP fill:#FDF2F8,stroke:#F9A8D4,stroke-width:2px,color:#9D174D
 ```
 
 ## 设计原则
